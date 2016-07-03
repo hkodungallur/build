@@ -7,24 +7,27 @@ set BUILD_NUMBER=%VERSION%-%BLD_NUM%
 set MANIFEST=%3
 set LICENSE=%4
 set ARCHITECTURE=%5
-set SRC_DIR_PREFIX=%6
 
-# This path is just ever so slightly too long for Windows to deal with.
-# So, move the directory.
-move couchbase\voltron v
-cd v
+pushd %WORKSPACE%\couchbase\voltron
 
 :package_win
 echo ======== package =============================
-ruby server-win.rb %WORKSPACE%\couchbase\install 5.10.4.0.0.1 couchbase_server %BUILD_NUMBER% %LICENSE% %ARCHITECTURE% %SRC_DIR_PREFIX%  || goto error
+ruby server-win.rb %WORKSPACE%\couchbase\install 5.10.4.0.0.1 couchbase_server %BUILD_NUMBER% %LICENSE% %ARCHITECTURE% || goto error
+popd
 
-set PKG_SRC_DIR=%WORKSPACE%\v\couchbase_server\%VERSION%\%BLD_NUM%
-set PKG_SRC_NAME=couchbase_server-%LICENSE%-windows-%ARCHITECTURE%-%BUILD_NUMBER%.exe
+pushd %WORKSPACE%\couchbase\voltron\nsis
+set PKG_FILE_DIR=%WORKSPACE%\couchbase\install
+python nsis_file_gen.py %PKG_FILE_DIR% i.nsh u.nsh
+"C:\Program Files (x86)\NSIS\makensis" /DFILES_SOURCE_PATH=%PKG_FILE_DR% /DINST_LIST=i.nsh /DUNINST_LIST=u.nsh couchbase_server.nsi
+popd
+
+set PKG_SRC_DIR=%WORKSPACE%\couchbase\voltron\nsis
+set PKG_SRC_NAME=couchbase-server.exe
 set PKG_DEST_NAME=couchbase-server-%LICENSE%_%BUILD_NUMBER%-windows_%ARCHITECTURE%.exe
 
 copy %PKG_SRC_DIR%\%PKG_SRC_NAME% %WORKSPACE%\%PKG_DEST_NAME%
-
-echo ========== creating trigger.properties ==============
-cd %WORKSPACE%
-echo PLATFORM=windows> trigger.properties
-echo INSTALLER_FILENAME=%PKG_DEST_NAME%>> trigger.properties
+rem 
+rem echo ========== creating trigger.properties ==============
+rem cd %WORKSPACE%
+rem echo PLATFORM=windows> trigger.properties
+rem echo INSTALLER_FILENAME=%PKG_DEST_NAME%>> trigger.properties

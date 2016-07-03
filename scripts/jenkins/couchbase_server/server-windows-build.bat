@@ -69,6 +69,8 @@ rem Archive all Windows debug files for future reference.
 rem Pre-clean all unnecessary files
 ruby voltron\cleanup.rb %WORKSPACE%\couchbase\install
 
+call cbbuild\scripts\jenkins\couchbase_server\server-windows-package.bat %VERSION% %BLD_NUM% %MANIFEST_FILE% %LICENSE% amd64
+
 @echo ============================================== %DATE%
 goto eof
 
