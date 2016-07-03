@@ -18,7 +18,7 @@ popd
 pushd %WORKSPACE%\couchbase\voltron\nsis
 set PKG_FILE_DIR=%WORKSPACE%\couchbase\install
 python nsis_file_gen.py %PKG_FILE_DIR% i.nsh u.nsh
-"C:\Program Files (x86)\NSIS\makensis" /DFILES_SOURCE_PATH=%PKG_FILE_DR% /DINST_LIST=i.nsh /DUNINST_LIST=u.nsh couchbase_server.nsi
+"C:\Program Files (x86)\NSIS\makensis" /DFILES_SOURCE_PATH=%PKG_FILE_DIR% /DINST_LIST=i.nsh /DUNINST_LIST=u.nsh couchbase_server.nsi
 popd
 
 set PKG_SRC_DIR=%WORKSPACE%\couchbase\voltron\nsis
