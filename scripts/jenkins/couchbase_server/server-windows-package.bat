@@ -8,17 +8,19 @@ set MANIFEST=%3
 set LICENSE=%4
 set ARCHITECTURE=%5
 
+set ERL_VER=5.10.4.0.0.1
+
 pushd %WORKSPACE%\couchbase\voltron
 
 :package_win
 echo ======== package =============================
-ruby server-win.rb %WORKSPACE%\couchbase\install 5.10.4.0.0.1 couchbase_server %BUILD_NUMBER% %LICENSE% %ARCHITECTURE% || goto error
+ruby server-win.rb %WORKSPACE%\couchbase\install %ERL_VER% couchbase_server %BUILD_NUMBER% %LICENSE% %ARCHITECTURE% || goto error
 popd
 
 pushd %WORKSPACE%\couchbase\voltron\nsis
 set PKG_FILE_DIR=%WORKSPACE%\couchbase\install
 python nsis_file_gen.py %PKG_FILE_DIR% i.nsh u.nsh
-"C:\Program Files (x86)\NSIS\makensis" /DFILES_SOURCE_PATH=%PKG_FILE_DIR% /DINST_LIST=i.nsh /DUNINST_LIST=u.nsh couchbase_server.nsi
+"C:\Program Files (x86)\NSIS\makensis" /DSRC_PREFIX=%PKG_FILE_DIR% /DVERSION=%VERSINO% /DBUILD_NUMBER=%BLD_NUM% /DERLANG_VER=%ERL_VER% /DINST_LIST=i.nsh /DUNINST_LIST=u.nsh couchbase_server.nsi
 popd
 
 set PKG_SRC_DIR=%WORKSPACE%\couchbase\voltron\nsis
